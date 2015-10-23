@@ -18,11 +18,6 @@ public class Player extends Creature {
         super(left, right, deadLeft, deadRight);
     }
 
-    public int returnShootingState(){
-    	
-    	return isShooting;
-    }
-
     public void collideHorizontal() {
         setVelocityX(0);
     }
@@ -60,10 +55,6 @@ public class Player extends Creature {
             onGround = false;
             setVelocityY(JUMP_SPEED);
         }
-    }
-    
-    public void shoot() {
-        
     }
 
 

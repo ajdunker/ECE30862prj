@@ -140,6 +140,7 @@ public class ResourceManager {
 
             // add every line except for comments
             if (!line.startsWith("#")) {
+            	
                 lines.add(line);
                 width = Math.max(width, line.length());
             }

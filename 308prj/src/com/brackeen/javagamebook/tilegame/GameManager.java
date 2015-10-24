@@ -399,21 +399,14 @@ public class GameManager extends GameCore {
         }
         else {
         	checkCreatureCollision(creature);
-        	if (System.currentTimeMillis() - creature.lastshot > (shotspeed*2)) {
-        		
-        		needabullet = 1;
-	            creature.lastshot = System.currentTimeMillis();
-	            X = creature.getX();
-	            Y = creature.getY();
-	            
-        		/*Sprite sprite = (Sprite)resourceManager.proSprite.clone();
-	            sprite.setX(creature.getX()-90);
-	            sprite.setY(creature.getY()+25);
-	            sprite.setVelocityX(-2);
-	            map.addSprite(sprite);
-	            soundManager.play(prizeSound);
-	            creature.lastshot = System.currentTimeMillis();
-        	*/
+        	if ((creature.getVelocityX() != 0) && (System.currentTimeMillis() - creature.lastshot > (shotspeed*2))) {
+        		if (System.currentTimeMillis() - creature.startmoving >= 500){
+
+        			needabullet = 1;
+    	            creature.lastshot = System.currentTimeMillis();
+    	            X = creature.getX();
+    	            Y = creature.getY();
+        		}
         	}
         }
 

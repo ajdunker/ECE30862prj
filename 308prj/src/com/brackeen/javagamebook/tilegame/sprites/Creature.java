@@ -1,6 +1,7 @@
 package com.brackeen.javagamebook.tilegame.sprites;
 
 import java.lang.reflect.Constructor;
+
 import com.brackeen.javagamebook.graphics.*;
 
 /**
@@ -27,6 +28,7 @@ public abstract class Creature extends Sprite {
     private Animation deadRight;
     private int state;
     private long stateTime;
+    public long startmoving = 0; //time the creature started moving
     public int isShooting = 0;
 
     /**
@@ -77,6 +79,7 @@ public abstract class Creature extends Sprite {
     */
     public void wakeUp() {
         if (getState() == STATE_NORMAL && getVelocityX() == 0) {
+        	startmoving = System.currentTimeMillis();
             setVelocityX(-getMaxSpeed());
         }
     }
@@ -159,6 +162,7 @@ public abstract class Creature extends Sprite {
         else if (state == STATE_DYING && newAnim == right) {
             newAnim = deadRight;
         }
+        
 
         // update the Animation
         if (anim != newAnim) {

@@ -54,6 +54,11 @@ public class GameManager extends GameCore {
     private int cooldown = 0; //cooldown flag
     
     private int playerdir = 1; // -1 is left, 1 is right
+    private float lastX = 0; //for tracking player movement with health
+    private float movedX = 0; //for tracking how long the player has moved
+    private int lastdX = 0; //last player x velocity
+    private int lastdY = 0; //last player y velocity
+    private long time0 = 0; //how long player has been motionless
 
     private float X = 0;
     private float Y = 0;
@@ -141,8 +146,6 @@ public class GameManager extends GameCore {
         	sprite.setVelocityX(-2);
             map.addSprite(sprite);
             soundManager.play(prizeSound);
-//            lastshot = System.currentTimeMillis();
-
         }
 		
         
@@ -323,14 +326,48 @@ public class GameManager extends GameCore {
     public void update(long elapsedTime) {
     	
         Creature player = (Creature)map.getPlayer();
+        Player player1 = (Player)map.getPlayer();
         
 
         // player is dead! start map over
         if (player.getState() == Creature.STATE_DEAD) {
+        	player1.setHealth(0);
+        	movedX = 0;
+        	lastX = 0;
+        	time0 = 0;
             map = resourceManager.reloadMap();
+            player1.setHealth(20);
             return;
         }
 
+        if(player1.getHealth() <= 0) {
+        	player.setState(Creature.STATE_DYING);
+        }
+        
+        //updating health for moving
+        if(lastX == 0){
+        	lastX = player.getX();
+        }
+        else {
+        	movedX += Math.abs(lastX - player.getX());
+        	lastX = player.getX();
+        }
+        if(movedX >= 3*player.getWidth()) {
+        	player1.modifyHealth(5);
+        	movedX = 0;
+        }
+        //updating health for staying motionless
+        if(player.getVelocityX() == 0 && player1.onGround == true) {
+        	time0 += elapsedTime;
+        }
+        else {
+        	time0 = 0;
+        }
+        if (time0 >= 1000) {
+        	player1.modifyHealth(5);
+        	time0 = 0;
+        }
+                
         // get keyboard/mouse input
         checkInput(elapsedTime);
 
@@ -399,21 +436,14 @@ public class GameManager extends GameCore {
         }
         else {
         	checkCreatureCollision(creature);
-        	if (System.currentTimeMillis() - creature.lastshot > (shotspeed*2)) {
-        		
-        		needabullet = 1;
-	            creature.lastshot = System.currentTimeMillis();
-	            X = creature.getX();
-	            Y = creature.getY();
-	            
-        		/*Sprite sprite = (Sprite)resourceManager.proSprite.clone();
-	            sprite.setX(creature.getX()-90);
-	            sprite.setY(creature.getY()+25);
-	            sprite.setVelocityX(-2);
-	            map.addSprite(sprite);
-	            soundManager.play(prizeSound);
-	            creature.lastshot = System.currentTimeMillis();
-        	*/
+        	if ((creature.getVelocityX() != 0) && (System.currentTimeMillis() - creature.lastshot > (shotspeed*2))) {
+        		if (System.currentTimeMillis() - creature.startmoving >= 500){
+
+        			needabullet = 1;
+    	            creature.lastshot = System.currentTimeMillis();
+    	            X = creature.getX();
+    	            Y = creature.getY();
+        		}
         	}
         }
 
@@ -475,11 +505,15 @@ public class GameManager extends GameCore {
             }
             else {
                 // player dies!
+                player.setHealth(0);
                 player.setState(Creature.STATE_DYING);
             }
         }
         else if (collisionSprite instanceof projectile) {
-        	player.setState(Creature.STATE_DYING);
+        	//player.setState(Creature.STATE_DYING);
+        	player.modifyHealth(-5);
+        	collisionSprite.setY(5000);
+        	collisionSprite.setVelocityX(0);
         }
     }
     
@@ -491,6 +525,8 @@ public class GameManager extends GameCore {
     	if (collisionSprite instanceof projectile) {
     		creature.setState(Creature.STATE_DYING);
     		collisionSprite.setY(5000);//move the bullet off of the screen if it kills something
+    		Player player = (Player)map.getPlayer();
+    		player.modifyHealth(5);
     	}
     }
 

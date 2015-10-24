@@ -47,9 +47,6 @@ public class GameManager extends GameCore {
     private GameAction jump;
     private GameAction exit;
     
-    private Sprite proSprite;
-    private Sprite badSprite;
-    
     private int shotspeed = 500; //milliseconds between successive shots
     private int shotcount = 0; //shot count goes up to 10
     private long lastshot = 0; //time of last shot
@@ -520,43 +517,6 @@ public class GameManager extends GameCore {
                 new EchoFilter(2000, .7f), false);
             map = resourceManager.loadNextMap();
         }
-    }
-    
-    public void loadProSprites () {
-        Image[][] images = new Image[2][];
-
-        // load left-facing images
-        images[0] = new Image[] {
-            loadImage("pro1.png"),
-            loadImage("pro2.png"),
-        };
-    	
-    	Animation[] proAnim = new Animation[2];
-        Animation[] badAnim = new Animation[2];
-        
-        proAnim[0] = createProAnim(images[0][0], images[0][1]);
-        badAnim[0] = createBadAnim(images[0][0], images[0][1]);
-        proAnim[1] = createProAnim(images[0][0], images[0][1]);
-        badAnim[1] = createBadAnim(images[0][0], images[0][1]);
-        
-        
-        proSprite = new projectile(proAnim[0], proAnim[1]);
-        badSprite = new projectileEnemy(proAnim[0], proAnim[1]);
-        
-    }
-    
-    private Animation createProAnim(Image img1, Image img2) {
-        Animation anim = new Animation();
-        anim.addFrame(img1, 250);
-        anim.addFrame(img2, 250);
-        return anim;
-    }
-
-    private Animation createBadAnim(Image img1, Image img2) {
-        Animation anim = new Animation();
-        anim.addFrame(img1, 250);
-        anim.addFrame(img2, 250);
-        return anim;
     }
 
 }

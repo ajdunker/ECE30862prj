@@ -29,7 +29,7 @@ public class ResourceManager {
     private Sprite grubSprite;
     private Sprite flySprite;
     public Sprite proSprite;
-    public Sprite badSprite;
+
 
     /**
         Creates a new ResourceManager with the specified
@@ -270,7 +270,6 @@ public class ResourceManager {
         Animation[] flyAnim = new Animation[4];
         Animation[] grubAnim = new Animation[4];
         Animation[] proAnim = new Animation[4];
-        Animation[] badAnim = new Animation[4];
         
         for (int i=0; i<4; i++) {
             playerAnim[i] = createPlayerAnim(
@@ -280,7 +279,6 @@ public class ResourceManager {
             grubAnim[i] = createGrubAnim(
                 images[i][6], images[i][7]);
             proAnim[i] = createProAnim(images[i][8], images[i][9]);
-            badAnim[i] = createBadAnim(images[i][8], images[i][9]);
         }
 
         // create creature sprites
@@ -291,7 +289,6 @@ public class ResourceManager {
         grubSprite = new Grub(grubAnim[0], grubAnim[1],
             grubAnim[2], grubAnim[3]);
         proSprite = new projectile(proAnim[0], proAnim[1]);
-        badSprite = new projectileEnemy(proAnim[0], proAnim[1]);
     }
 
 
@@ -329,13 +326,6 @@ public class ResourceManager {
     }
     
     private Animation createProAnim(Image img1, Image img2) {
-        Animation anim = new Animation();
-        anim.addFrame(img1, 250);
-        anim.addFrame(img2, 250);
-        return anim;
-    }
-
-    private Animation createBadAnim(Image img1, Image img2) {
         Animation anim = new Animation();
         anim.addFrame(img1, 250);
         anim.addFrame(img2, 250);

@@ -13,6 +13,7 @@ public class Player extends Creature {
     public int isShooting = 0;
     
     private int health = 20;
+    private int score = 0;
 
     public Player(Animation left, Animation right,
         Animation deadLeft, Animation deadRight)
@@ -60,10 +61,17 @@ public class Player extends Creature {
     	return health;
     }
     
+    public void modifyScore(int x) {
+    	score += x;
+    }
+    
+    public int getScore() {
+    	return score;
+    }
+    
     public void wakeUp() {
         // do nothing
     }
-
 
     /**
         Makes the player jump if the player is on the ground or

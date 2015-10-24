@@ -56,8 +56,6 @@ public class GameManager extends GameCore {
     private int playerdir = 1; // -1 is left, 1 is right
     private float lastX = 0; //for tracking player movement with health
     private float movedX = 0; //for tracking how long the player has moved
-    private int lastdX = 0; //last player x velocity
-    private int lastdY = 0; //last player y velocity
     private long time0 = 0; //how long player has been motionless
 
     private float X = 0;
@@ -352,8 +350,8 @@ public class GameManager extends GameCore {
         	movedX += Math.abs(lastX - player.getX());
         	lastX = player.getX();
         }
-        if(movedX >= 3*player.getWidth()) {
-        	player1.modifyHealth(5);
+        if(movedX >= 2*player.getWidth()) {
+        	player1.modifyHealth(1);
         	movedX = 0;
         }
         //updating health for staying motionless

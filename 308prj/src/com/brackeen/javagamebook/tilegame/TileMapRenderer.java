@@ -149,7 +149,7 @@ public class TileMapRenderer {
             }
         }
         Player player1 = (Player)map.getPlayer();
-        g.drawString("Health: " + Integer.toString(player1.getHealth()), 150, 150);
+        g.drawString("Health: " + Integer.toString(player1.getHealth()), 50, 50);
     }
 
 }

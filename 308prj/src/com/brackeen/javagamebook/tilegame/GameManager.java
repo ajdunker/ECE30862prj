@@ -58,6 +58,10 @@ public class GameManager extends GameCore {
     
     private int playerdir = 1; // -1 is left, 1 is right
 
+    private float X = 0;
+    private float Y = 0;
+    private int needabullet = 0;
+    
     public void init() {
         super.init();
 
@@ -130,10 +134,23 @@ public class GameManager extends GameCore {
         if (exit.isPressed()) {
             stop();
         }
+        
         Player player = (Player)map.getPlayer();
+        if (needabullet == 1){
+        	needabullet = 0;
+    		Sprite sprite = (Sprite)resourceManager.proSprite.clone();
+        	sprite.setX(X-90);
+        	sprite.setY(Y);
+        	sprite.setVelocityX(-2);
+            map.addSprite(sprite);
+            soundManager.play(prizeSound);
+//            lastshot = System.currentTimeMillis();
+
+        }
+		
+        
         if (player.isAlive()) {
             float velocityX = 0;
-  //          player.isShooting = 0; // player is generally not shooting.
             if (moveLeft.isPressed()) {
                 velocityX-=player.getMaxSpeed();
                 playerdir = -1;
@@ -309,7 +326,6 @@ public class GameManager extends GameCore {
     public void update(long elapsedTime) {
     	
         Creature player = (Creature)map.getPlayer();
-        Player player2 = (Player)map.getPlayer();
         
 
         // player is dead! start map over
@@ -387,13 +403,20 @@ public class GameManager extends GameCore {
         else {
         	checkCreatureCollision(creature);
         	if (System.currentTimeMillis() - creature.lastshot > (shotspeed*2)) {
-        		//Sprite sprite = (Sprite)resourceManager.proSprite.clone();
-	            //sprite.setX(creature.getX()-90);
-	            //sprite.setY(creature.getY()+25);
-	            //sprite.setVelocityX(-2);
-	            //map.addSprite(sprite);
-	            //soundManager.play(prizeSound);
-	            //creature.lastshot = System.currentTimeMillis();
+        		
+        		needabullet = 1;
+	            creature.lastshot = System.currentTimeMillis();
+	            X = creature.getX();
+	            Y = creature.getY();
+	            
+        		/*Sprite sprite = (Sprite)resourceManager.proSprite.clone();
+	            sprite.setX(creature.getX()-90);
+	            sprite.setY(creature.getY()+25);
+	            sprite.setVelocityX(-2);
+	            map.addSprite(sprite);
+	            soundManager.play(prizeSound);
+	            creature.lastshot = System.currentTimeMillis();
+        	*/
         	}
         }
 
@@ -470,6 +493,7 @@ public class GameManager extends GameCore {
     	Sprite collisionSprite = getSpriteCollision(creature);
     	if (collisionSprite instanceof projectile) {
     		creature.setState(Creature.STATE_DYING);
+    		collisionSprite.setY(5000);//move the bullet off of the screen if it kills something
     	}
     }
 

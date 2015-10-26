@@ -58,9 +58,9 @@ public class GameManager extends GameCore {
     private float movedX = 0; //for tracking how long the player has moved
     private long time0 = 0; //how long player has been motionless
 
-    private float X = 0;
-    private float Y = 0;
-    private int needabullet = 0;
+    private float X = 0; //local copy of current creature X position
+    private float Y = 0; //local copy of current creature Y position
+    private int needabullet = 0; // need to create a bullet sprite for the current creature
     
     public void init() {
         super.init();
@@ -84,10 +84,10 @@ public class GameManager extends GameCore {
         soundManager = new SoundManager(PLAYBACK_FORMAT);
         prizeSound = soundManager.getSound("sounds/prize.wav");
         boopSound = soundManager.getSound("sounds/boop2.wav");
+        soundManager.play(prizeSound,null,true);
 
         // load sprites
         resourceManager.loadCreatureSprites();
-        //loadProSprites();
         
         // start music
         midiPlayer = new MidiPlayer();
@@ -433,6 +433,9 @@ public class GameManager extends GameCore {
             checkPlayerCollision((Player)creature, false);
         }
         else {
+        	//this will create a bullet sprite for the current creature.
+        	//It will only create a sprite for the creature if it has been "woken up"
+        	//Also the shot speed is based on the time of the last shot and is twice as slow as the player's shots
         	checkCreatureCollision(creature);
         	if ((creature.getVelocityX() != 0) && (System.currentTimeMillis() - creature.lastshot > (shotspeed*2))) {
         		if (System.currentTimeMillis() - creature.startmoving >= 500){
@@ -508,10 +511,12 @@ public class GameManager extends GameCore {
             }
         }
         else if (collisionSprite instanceof projectile) {
-        	//player.setState(Creature.STATE_DYING);
+        	//if player is hit by a bullet, then decrease it's health by 5
+        	//make the bullet "disappear" by moving it off the screen 
         	player.modifyHealth(-5);
         	collisionSprite.setY(5000);
         	collisionSprite.setVelocityX(0);
+        	
         }
     }
     
@@ -521,8 +526,11 @@ public class GameManager extends GameCore {
     	}
     	Sprite collisionSprite = getSpriteCollision(creature);
     	if (collisionSprite instanceof projectile) {
+    		//if the player kills a creature, then incease it's health by 5
+    		//move the bullet off of the screen.
     		creature.setState(Creature.STATE_DYING);
-    		collisionSprite.setY(5000);//move the bullet off of the screen if it kills something
+    		collisionSprite.setY(5000);
+    		collisionSprite.setVelocityX(0);
     		Player player = (Player)map.getPlayer();
     		player.modifyHealth(5);
     	}

@@ -44,9 +44,10 @@ public class SoundManager extends ThreadPool {
     public SoundManager(AudioFormat playbackFormat,
         int maxSimultaneousSounds)
     {
-        super(Math.min(maxSimultaneousSounds,
-            getMaxSimultaneousSounds(playbackFormat)));
-        this.playbackFormat = playbackFormat;
+       // super(Math.min(maxSimultaneousSounds,
+        //    getMaxSimultaneousSounds(playbackFormat)));
+        super(1);
+    	this.playbackFormat = playbackFormat;
         localLine = new ThreadLocal();
         localBuffer = new ThreadLocal();
         pausedLock = new Object();

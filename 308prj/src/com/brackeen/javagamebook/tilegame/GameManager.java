@@ -14,6 +14,8 @@ import com.brackeen.javagamebook.input.*;
 import com.brackeen.javagamebook.test.GameCore;
 import com.brackeen.javagamebook.tilegame.sprites.*;
 
+import java.io.File;
+
 /**
     GameManager manages all parts of the game.
 */
@@ -81,20 +83,20 @@ public class GameManager extends GameCore {
         map = resourceManager.loadNextMap();
 
         // load sounds
+        
         soundManager = new SoundManager(PLAYBACK_FORMAT);
-        prizeSound = soundManager.getSound("sounds/prize.wav");
-        boopSound = soundManager.getSound("sounds/boop2.wav");
-        soundManager.play(prizeSound,null,true);
-
+        prizeSound = soundManager.getSound("./sounds/prize.wav");
+        boopSound = soundManager.getSound("./sounds/boop2.wav");
+       
         // load sprites
         resourceManager.loadCreatureSprites();
         
         // start music
         midiPlayer = new MidiPlayer();
         Sequence sequence =
-            midiPlayer.getSequence("sounds/music.midi");
-        midiPlayer.play(sequence, true);
-        toggleDrumPlayback();
+            midiPlayer.getSequence("./sounds/music.midi");
+       // midiPlayer.play(sequence, true);
+        //toggleDrumPlayback();
     }
 
 

@@ -40,6 +40,8 @@ public class GameManager extends GameCore {
     private ResourceManager resourceManager;
     private Sound prizeSound;
     private Sound boopSound;
+    private Sound shootSound;
+    private Sound dundunSound;
     private InputManager inputManager;
     private TileMapRenderer renderer;
 
@@ -87,6 +89,9 @@ public class GameManager extends GameCore {
         soundManager = new SoundManager(PLAYBACK_FORMAT);
         prizeSound = soundManager.getSound("./sounds/prize.wav");
         boopSound = soundManager.getSound("./sounds/boop2.wav");
+        shootSound = soundManager.getSound("./sounds/laser.wav");
+        dundunSound = soundManager.getSound("./sounds/dundun.wav");
+        
        
         // load sprites
         resourceManager.loadCreatureSprites();
@@ -178,7 +183,7 @@ public class GameManager extends GameCore {
 		            	sprite.setY(player.getY()+25);
 		            	sprite.setVelocityX(2*playerdir);
 		                map.addSprite(sprite);
-		                soundManager.play(prizeSound);
+		                soundManager.play(shootSound);
 		                lastshot = System.currentTimeMillis();
 	            		
             		}
@@ -509,6 +514,7 @@ public class GameManager extends GameCore {
             else {
                 // player dies!
                 player.setHealth(0);
+                soundManager.play(dundunSound);
                 player.setState(Creature.STATE_DYING);
             }
         }
@@ -531,6 +537,7 @@ public class GameManager extends GameCore {
     		//if the player kills a creature, then incease it's health by 5
     		//move the bullet off of the screen.
     		creature.setState(Creature.STATE_DYING);
+    		soundManager.play(boopSound);
     		collisionSprite.setY(5000);
     		collisionSprite.setVelocityX(0);
     		Player player = (Player)map.getPlayer();

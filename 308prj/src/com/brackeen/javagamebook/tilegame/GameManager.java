@@ -445,7 +445,7 @@ public class GameManager extends GameCore {
         	//Also the shot speed is based on the time of the last shot and is twice as slow as the player's shots
         	checkCreatureCollision(creature);
         	if ((creature.getVelocityX() != 0) && (System.currentTimeMillis() - creature.lastshot > (shotspeed*2))) {
-        		if (System.currentTimeMillis() - creature.startmoving >= 500){
+        		if ((System.currentTimeMillis() - creature.startmoving >= 500) || (movedX >= 2*map.getPlayer().getWidth())){
 
         			needabullet = 1;
     	            creature.lastshot = System.currentTimeMillis();

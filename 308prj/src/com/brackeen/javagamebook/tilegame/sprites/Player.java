@@ -11,6 +11,8 @@ public class Player extends Creature {
 
     public boolean onGround;
     public int isShooting = 0;
+    public int invincible = 0;
+    public long startInvincible = 0;
     
     private int health = 20;
     private int score = 0;

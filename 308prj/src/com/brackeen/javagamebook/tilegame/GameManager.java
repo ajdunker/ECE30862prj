@@ -48,6 +48,9 @@ public class GameManager extends GameCore {
     private GameAction moveLeft;
     private GameAction moveRight;
     private GameAction shoot;
+    private GameAction moveUp;
+    private GameAction moveDown;
+    
     private GameAction jump;
     private GameAction exit;
     
@@ -123,6 +126,8 @@ public class GameManager extends GameCore {
         exit = new GameAction("exit",
             GameAction.DETECT_INITAL_PRESS_ONLY);
         shoot = new GameAction("shoot");
+        moveUp = new GameAction("moveUp");
+        moveDown = new GameAction("moveDown");
 
         inputManager = new InputManager(
             screen.getFullScreenWindow());
@@ -133,6 +138,9 @@ public class GameManager extends GameCore {
         inputManager.mapToKey(shoot, KeyEvent.VK_S);
         inputManager.mapToKey(jump, KeyEvent.VK_SPACE);
         inputManager.mapToKey(exit, KeyEvent.VK_ESCAPE);
+        inputManager.mapToKey(moveDown, KeyEvent.VK_DOWN);
+        inputManager.mapToKey(moveUp, KeyEvent.VK_UP);
+        
     }
 
 
@@ -167,6 +175,14 @@ public class GameManager extends GameCore {
             if (jump.isPressed()) {
                 player.jump(false);
             }
+            
+            if (moveUp.isPressed()){
+            	player.jump(false);
+            }
+            if (moveDown.isPressed()){
+            	player.setY(player.getY()+2);;
+            }
+            
             if (shoot.isPressed()) {
             	if ((System.currentTimeMillis() - lastshot > shotspeed) && (cooldown == 0)) {
             		
@@ -333,6 +349,9 @@ public class GameManager extends GameCore {
         Creature player = (Creature)map.getPlayer();
         Player player1 = (Player)map.getPlayer();
         
+        if ((System.currentTimeMillis() - player1.startInvincible >= 1000)|| movedX >= 10*player1.getWidth()){
+        	player1.invincible = 0;
+        }
 
         // player is dead! start map over
         if (player.getState() == Creature.STATE_DEAD) {
@@ -521,7 +540,10 @@ public class GameManager extends GameCore {
         else if (collisionSprite instanceof projectile) {
         	//if player is hit by a bullet, then decrease it's health by 5
         	//make the bullet "disappear" by moving it off the screen 
-        	player.modifyHealth(-5);
+        	//check to see if player is invincible before decreasing health
+        	if (player.invincible == 0){
+        		player.modifyHealth(-5);
+        	}
         	collisionSprite.setY(5000);
         	collisionSprite.setVelocityX(0);
         	
@@ -534,7 +556,7 @@ public class GameManager extends GameCore {
     	}
     	Sprite collisionSprite = getSpriteCollision(creature);
     	if (collisionSprite instanceof projectile) {
-    		//if the player kills a creature, then incease it's health by 5
+    		//if the player kills a creature, then increase it's health by 5
     		//move the bullet off of the screen.
     		creature.setState(Creature.STATE_DYING);
     		soundManager.play(boopSound);
@@ -552,15 +574,19 @@ public class GameManager extends GameCore {
     public void acquirePowerUp(PowerUp powerUp) {
         // remove it from the map
         map.removeSprite(powerUp);
+        Player player = (Player)map.getPlayer();
 
         if (powerUp instanceof PowerUp.Star) {
             // do something here, like give the player points
             soundManager.play(prizeSound);
+            player.setHealth(player.getHealth()+5);
         }
         else if (powerUp instanceof PowerUp.Music) {
             // change the music
             soundManager.play(prizeSound);
             toggleDrumPlayback();
+            player.invincible = 1;
+            player.startInvincible = System.currentTimeMillis();
         }
         else if (powerUp instanceof PowerUp.Goal) {
             // advance to next map

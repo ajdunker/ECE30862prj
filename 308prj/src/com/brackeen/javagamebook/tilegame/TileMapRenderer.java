@@ -160,10 +160,14 @@ public class TileMapRenderer {
         Player player1 = (Player)map.getPlayer();
         g.drawImage(scorekeep, 50, 0, null);;
         g.setColor(Color.black);
-        if(player1.invincible == 1) { g.setColor(Color.yellow); }
-        g.drawString("Health: " + Integer.toString(player1.getHealth()), 68, 90);
-
-        
+        if(player1.invincible == 1) { 
+        	g.setColor(Color.black);
+        	g.drawString("Health: " + Integer.toString(player1.getHealth()), 69, 91);
+        	g.setColor(Color.yellow);
+        	g.drawString("Health: " + Integer.toString(player1.getHealth()), 68, 90);
+        } else {
+            g.drawString("Health: " + Integer.toString(player1.getHealth()), 68, 90);
+        }      
     }
 
 }

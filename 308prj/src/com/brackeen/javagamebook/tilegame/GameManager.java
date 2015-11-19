@@ -114,8 +114,12 @@ public class GameManager extends GameCore {
         try {
 			map = resourceManager.loadMap("maps/" + maptxt);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			//e.printStackTrace();
+			try {
+				map = resourceManager.loadMap("maps/default.txt");
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				//e1.printStackTrace();
+			}
 		}
 
         // load sounds
@@ -381,7 +385,7 @@ public class GameManager extends GameCore {
         Creature player = (Creature)map.getPlayer();
         Player player1 = (Player)map.getPlayer();
         
-        if ((System.currentTimeMillis() - player1.startInvincible >= 1000)|| player1.startInv >= 10){
+        if ((System.currentTimeMillis() - player1.startInvincible >= 10000)|| player1.startInv >= 10){
         	player1.invincible = 0;
         }
 
@@ -500,7 +504,6 @@ public class GameManager extends GameCore {
         	checkCreatureCollision(creature);
         	if ((creature.getVelocityX() != 0) && (System.currentTimeMillis() - creature.lastshot > (shotspeed*2))) {
         		if ((System.currentTimeMillis() - creature.startmoving >= 500) || (movedX >= 2*map.getPlayer().getWidth())){
-
         			needabullet = 1;
     	            creature.lastshot = System.currentTimeMillis();
     	            X = creature.getX();
@@ -534,8 +537,6 @@ public class GameManager extends GameCore {
             boolean canKill = (oldY < creature.getY());
             checkPlayerCollision((Player)creature, canKill);
         }
-        
-
     }
 
 
@@ -571,6 +572,9 @@ public class GameManager extends GameCore {
                     player.setHealth(0);
                     soundManager.play(dundunSound);
                     player.setState(Creature.STATE_DYING);	
+            	} else {
+            		soundManager.play(boopSound);
+                    badguy.setState(Creature.STATE_DYING);
             	}
             }
         }

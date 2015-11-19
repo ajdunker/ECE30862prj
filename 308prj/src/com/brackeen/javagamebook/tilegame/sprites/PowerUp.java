@@ -56,5 +56,14 @@ public abstract class PowerUp extends Sprite {
             super(anim);
         }
     }
+    
+    /**
+    	A Shroom PowerUp. Adds health.
+	*/
+	public static class Shroom extends PowerUp {
+	    public Shroom(Animation anim) {
+	        super(anim);
+	    }
+	}
 
 }

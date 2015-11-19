@@ -21,6 +21,8 @@ import com.brackeen.javagamebook.tilegame.sprites.Player;
 
     <p>This TileMapRender uses a tile size of 64.
 */
+
+
 public class TileMapRenderer {
 
     private static final int TILE_SIZE = 64;
@@ -29,6 +31,7 @@ public class TileMapRenderer {
     private static final int TILE_SIZE_BITS = 6;
 
     private Image background;
+    private Image scorekeep;
 
     /**
         Converts a pixel position to a tile position.
@@ -70,6 +73,10 @@ public class TileMapRenderer {
     */
     public void setBackground(Image background) {
         this.background = background;
+    }
+    
+    public void setScoreKeep(Image scorekeep) {
+    	this.scorekeep = scorekeep;
     }
 
 
@@ -126,7 +133,7 @@ public class TileMapRenderer {
                 }
             }
         }
-
+        
         // draw player
         g.drawImage(player.getImage(),
             Math.round(player.getX()) + offsetX,
@@ -148,8 +155,15 @@ public class TileMapRenderer {
                 ((Creature)sprite).wakeUp();
             }
         }
+        
+        //Draw health stuff
         Player player1 = (Player)map.getPlayer();
-        g.drawString("Health: " + Integer.toString(player1.getHealth()), 50, 50);
+        g.drawImage(scorekeep, 50, 0, null);;
+        g.setColor(Color.black);
+        if(player1.invincible == 1) { g.setColor(Color.yellow); }
+        g.drawString("Health: " + Integer.toString(player1.getHealth()), 68, 90);
+
+        
     }
 
 }

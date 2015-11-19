@@ -16,6 +16,11 @@ import com.brackeen.javagamebook.tilegame.sprites.*;
 
 import java.io.File;
 
+//added for input
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 /**
     GameManager manages all parts of the game.
 */
@@ -32,6 +37,7 @@ public class GameManager extends GameCore {
     private static final int DRUM_TRACK = 1;
 
     public static final float GRAVITY = 0.002f;
+    public static String maptxt;
 
     private Point pointCache = new Point();
     private TileMap map;
@@ -42,6 +48,7 @@ public class GameManager extends GameCore {
     private Sound boopSound;
     private Sound shootSound;
     private Sound dundunSound;
+    private Sound healthSound;
     private InputManager inputManager;
     private TileMapRenderer renderer;
 
@@ -70,6 +77,23 @@ public class GameManager extends GameCore {
     private int needabullet = 0; // need to create a bullet sprite for the current creature
     
     public void init() {
+    	//take map input
+    	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        while(true) {
+        	System.out.println("Enter String (must be .txt format):");
+            try {
+    			maptxt = br.readLine();
+    			File f = new File("maps/" + maptxt);
+    			if(f.exists()) {
+    				break;
+    			}
+    		} catch (IOException e) {
+    			// TODO Auto-generated catch block
+    			//e.printStackTrace();
+    		}
+        }
+
+    	
         super.init();
 
         // set up input manager
@@ -83,9 +107,16 @@ public class GameManager extends GameCore {
         renderer = new TileMapRenderer();
         renderer.setBackground(
             resourceManager.loadImage("background.png"));
+        renderer.setScoreKeep(
+        	resourceManager.loadImage("score.png"));
 
         // load first map
-        map = resourceManager.loadNextMap();
+        try {
+			map = resourceManager.loadMap("maps/" + maptxt);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+		}
 
         // load sounds
         
@@ -94,6 +125,7 @@ public class GameManager extends GameCore {
         boopSound = soundManager.getSound("./sounds/boop2.wav");
         shootSound = soundManager.getSound("./sounds/laser.wav");
         dundunSound = soundManager.getSound("./sounds/dundun.wav");
+        healthSound = soundManager.getSound("./sounds/health.wav");
         
        
         // load sprites
@@ -103,7 +135,7 @@ public class GameManager extends GameCore {
         midiPlayer = new MidiPlayer();
         Sequence sequence =
             midiPlayer.getSequence("./sounds/music.midi");
-       // midiPlayer.play(sequence, true);
+       midiPlayer.play(sequence, true);
         //toggleDrumPlayback();
     }
 
@@ -180,7 +212,7 @@ public class GameManager extends GameCore {
             	player.jump(false);
             }
             if (moveDown.isPressed()){
-            	player.setY(player.getY()+2);;
+            	player.setVelocityY(player.getVelocityY() + 1);;
             }
             
             if (shoot.isPressed()) {
@@ -349,7 +381,7 @@ public class GameManager extends GameCore {
         Creature player = (Creature)map.getPlayer();
         Player player1 = (Player)map.getPlayer();
         
-        if ((System.currentTimeMillis() - player1.startInvincible >= 1000)|| movedX >= 10*player1.getWidth()){
+        if ((System.currentTimeMillis() - player1.startInvincible >= 1000)|| player1.startInv >= 10){
         	player1.invincible = 0;
         }
 
@@ -379,6 +411,9 @@ public class GameManager extends GameCore {
         if(movedX >= 2*player.getWidth()) {
         	player1.modifyHealth(1);
         	movedX = 0;
+        	if(player1.invincible == 1) {
+        		player1.startInv++;
+        	}
         }
         //updating health for staying motionless
         if(player.getVelocityX() == 0 && player1.onGround == true) {
@@ -532,9 +567,11 @@ public class GameManager extends GameCore {
             }
             else {
                 // player dies!
-                player.setHealth(0);
-                soundManager.play(dundunSound);
-                player.setState(Creature.STATE_DYING);
+            	if(player.invincible == 0) {
+                    player.setHealth(0);
+                    soundManager.play(dundunSound);
+                    player.setState(Creature.STATE_DYING);	
+            	}
             }
         }
         else if (collisionSprite instanceof projectile) {
@@ -579,20 +616,24 @@ public class GameManager extends GameCore {
         if (powerUp instanceof PowerUp.Star) {
             // do something here, like give the player points
             soundManager.play(prizeSound);
-            player.setHealth(player.getHealth()+5);
+            
+            player.invincible = 1;
+            player.startInvincible = System.currentTimeMillis();
         }
         else if (powerUp instanceof PowerUp.Music) {
             // change the music
             soundManager.play(prizeSound);
-            toggleDrumPlayback();
-            player.invincible = 1;
-            player.startInvincible = System.currentTimeMillis();
+            player.setHealth(player.getHealth()+5);
         }
         else if (powerUp instanceof PowerUp.Goal) {
             // advance to next map
             soundManager.play(prizeSound,
                 new EchoFilter(2000, .7f), false);
             map = resourceManager.loadNextMap();
+        }
+        else if (powerUp instanceof PowerUp.Shroom) {
+        	soundManager.play(healthSound);
+        	player.setHealth(player.getHealth()+5);
         }
     }
 

@@ -28,7 +28,9 @@ public class ResourceManager {
     private Sprite goalSprite;
     private Sprite grubSprite;
     private Sprite flySprite;
+    private Sprite shroomSprite;
     public Sprite proSprite;
+    
 
 
     /**
@@ -120,7 +122,7 @@ public class ResourceManager {
     }
 
 
-    private TileMap loadMap(String filename)
+    public TileMap loadMap(String filename)
         throws IOException
     {
         ArrayList lines = new ArrayList();
@@ -169,6 +171,9 @@ public class ResourceManager {
                 }
                 else if (ch == '*') {
                     addSprite(newMap, goalSprite, x, y);
+                }
+                else if (ch == '&') {
+                	addSprite(newMap, shroomSprite, x, y);
                 }
                 else if (ch == '1') {
                     addSprite(newMap, grubSprite, x, y);
@@ -357,6 +362,13 @@ public class ResourceManager {
         anim.addFrame(loadImage("music3.png"), 150);
         anim.addFrame(loadImage("music2.png"), 150);
         musicSprite = new PowerUp.Music(anim);
+        
+        anim = new Animation();
+        anim.addFrame(loadImage("shroom1.png"), 150);    
+        anim.addFrame(loadImage("shroom2.png"), 150); 
+        anim.addFrame(loadImage("shroom1.png"), 150); 
+        anim.addFrame(loadImage("shroom3.png"), 150);
+        shroomSprite = new PowerUp.Shroom(anim);
     }
 
 }

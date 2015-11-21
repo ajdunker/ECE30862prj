@@ -29,6 +29,8 @@ public class ResourceManager {
     private Sprite grubSprite;
     private Sprite flySprite;
     private Sprite shroomSprite;
+    private Sprite expBlock;
+    private Sprite gasBlock;
     public Sprite proSprite;
     
 
@@ -174,6 +176,12 @@ public class ResourceManager {
                 }
                 else if (ch == '&') {
                 	addSprite(newMap, shroomSprite, x, y);
+                }
+                else if (ch == '#') {
+                	addSprite(newMap, gasBlock, x, y);
+                }
+                else if (ch == '@') {
+                	addSprite(newMap, expBlock, x, y);
                 }
                 else if (ch == '1') {
                     addSprite(newMap, grubSprite, x, y);
@@ -363,12 +371,23 @@ public class ResourceManager {
         anim.addFrame(loadImage("music2.png"), 150);
         musicSprite = new PowerUp.Music(anim);
         
+        // Shroom Sprite
         anim = new Animation();
         anim.addFrame(loadImage("shroom1.png"), 150);    
         anim.addFrame(loadImage("shroom2.png"), 150); 
         anim.addFrame(loadImage("shroom1.png"), 150); 
         anim.addFrame(loadImage("shroom3.png"), 150);
         shroomSprite = new PowerUp.Shroom(anim);
+        
+        // gas block
+        anim = new Animation();
+        anim.addFrame(loadImage("tile_ex.png"), 150);    
+        expBlock = new PowerUp.ExpBl(anim);
+        
+        // explosion block
+        anim = new Animation();
+        anim.addFrame(loadImage("tile_gas.png"), 150);    
+        gasBlock = new PowerUp.GasBl(anim);
     }
 
 }

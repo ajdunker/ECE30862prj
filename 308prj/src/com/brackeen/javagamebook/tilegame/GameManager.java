@@ -49,6 +49,8 @@ public class GameManager extends GameCore {
     private Sound shootSound;
     private Sound dundunSound;
     private Sound healthSound;
+    private Sound expSound;
+    private Sound gasSound;
     private InputManager inputManager;
     private TileMapRenderer renderer;
 
@@ -130,7 +132,8 @@ public class GameManager extends GameCore {
         shootSound = soundManager.getSound("./sounds/laser.wav");
         dundunSound = soundManager.getSound("./sounds/dundun.wav");
         healthSound = soundManager.getSound("./sounds/health.wav");
-        
+        gasSound = soundManager.getSound("./sounds/gurgle_x_converted.wav");
+        expSound = soundManager.getSound("./sounds/explosion_x_converted.wav");
        
         // load sprites
         resourceManager.loadCreatureSprites();
@@ -139,7 +142,7 @@ public class GameManager extends GameCore {
         midiPlayer = new MidiPlayer();
         Sequence sequence =
             midiPlayer.getSequence("./sounds/music.midi");
-       midiPlayer.play(sequence, true);
+        //midiPlayer.play(sequence, true);
         //toggleDrumPlayback();
     }
 
@@ -638,6 +641,16 @@ public class GameManager extends GameCore {
         else if (powerUp instanceof PowerUp.Shroom) {
         	soundManager.play(healthSound);
         	player.setHealth(player.getHealth()+5);
+        }
+        else if (powerUp instanceof PowerUp.ExpBl) {
+        	soundManager.play(expSound);
+        	player.setHealth(player.getHealth()-10);
+        	player.setVelocityX(0);
+        }
+        else if (powerUp instanceof PowerUp.GasBl) {
+        	soundManager.play(gasSound);
+        	waittime = System.currentTimeMillis();
+			cooldown = 1;
         }
     }
 

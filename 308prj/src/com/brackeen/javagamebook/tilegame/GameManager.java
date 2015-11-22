@@ -643,9 +643,11 @@ public class GameManager extends GameCore {
         	player.setHealth(player.getHealth()+5);
         }
         else if (powerUp instanceof PowerUp.ExpBl) {
-        	soundManager.play(expSound);
-        	player.setHealth(player.getHealth()-10);
-        	player.setVelocityX(0);
+        	if(player.invincible == 0) {
+            	soundManager.play(expSound);
+            	player.setHealth(player.getHealth()-10);
+            	player.setVelocityX(0);
+        	}
         }
         else if (powerUp instanceof PowerUp.GasBl) {
         	soundManager.play(gasSound);
